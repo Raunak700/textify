@@ -1,14 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
-import { CaretSortIcon, CheckIcon, LockClosedIcon } from '@radix-ui/react-icons';
+import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
 import { cn } from '@/lib/utils';
-import { FREE_FONTS, ALL_FONTS } from '@/constants/fonts';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { ALL_FONTS } from '@/constants/fonts';
 
 interface FontFamilyPickerProps { 
   attribute: string;
@@ -23,28 +22,6 @@ const FontFamilyPicker: React.FC<FontFamilyPickerProps> = ({
   handleAttributeChange,
   userId
 }) => {
-  const [isPaidUser, setIsPaidUser] = useState(false);
-  const supabaseClient = useSupabaseClient();
-
-  useEffect(() => { 
-    const checkUserStatus = async () => {
-      try {
-        const { data: profile, error } = await supabaseClient
-          .from('profiles')
-          .select('paid')
-          .eq('id', userId)
-          .single();
-
-        if (error) throw error;
-        setIsPaidUser(profile?.paid || false);
-      } catch (error) {
-        console.error('Error checking user status:', error);
-      }
-    };
-
-    checkUserStatus();
-  }, [userId, supabaseClient]);
-
   return (
     <Popover>
       <div className='flex flex-col items-start justify-start my-8'>
