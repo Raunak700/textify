@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/compon
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ChromePicker } from 'react-color';
 import { colors } from '@/constants/colors';
+import { HexColorPicker } from "react-colorful";
 
 interface ColorPickerProps {
   attribute: string;
@@ -23,51 +24,20 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
 }) => {
 
   return (
-    <div className={`flex flex-col gap-2`}>
-      <Label htmlFor={attribute}>{label}</Label>
-
-      <div className='flex flex-wrap gap-1 p-1'>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant='outline' className='gap-2'>
-              <div
-                style={{ background: currentColor }}
-                className="rounded-md h-full w-6 cursor-pointer active:scale-105"
-              />
-              <span>{currentColor}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className='flex flex-col items-center justify-center w-[240px]'
-            side='left'
-            sideOffset={10}
-          >
-            <Tabs defaultValue='colorPicker'>
-              <TabsList className='grid w-full grid-cols-2'>
-                <TabsTrigger value='colorPicker'>🎨</TabsTrigger>
-                <TabsTrigger value='suggestions'>⚡️</TabsTrigger>
-              </TabsList>
-              <TabsContent value='colorPicker'>
-                <ChromePicker
-                  color={currentColor}
-                  onChange={(color) => handleAttributeChange(attribute, color.hex)}
-                />
-              </TabsContent>
-              <TabsContent value='suggestions'>
-                <div className='flex flex-wrap gap-1 mt-2'>
-                  {colors.map((color) => (
-                    <div
-                      key={color}
-                      style={{ background: color }}
-                      className="rounded-md h-6 w-6 cursor-pointer active:scale-105"
-                      onClick={() => handleAttributeChange(attribute, color)}
-                    />
-                  ))}
-                </div>
-              </TabsContent>
-            </Tabs> 
-          </DropdownMenuContent>
-        </DropdownMenu>
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <div className="flex items-center gap-4">
+        <div className="w-8 h-8 rounded-md border" style={{ backgroundColor: currentColor }} />
+        <input
+          type="text"
+          value={currentColor}
+          onChange={(e) => handleAttributeChange(attribute, e.target.value)}
+          className="flex-1 px-2 py-1 text-sm border rounded-md"
+          placeholder="#000000"
+        />
+      </div>
+      <div className="mt-2">
+        <HexColorPicker color={currentColor} onChange={(value) => handleAttributeChange(attribute, value)} />
       </div>
     </div>
   );

@@ -241,128 +241,141 @@ const Page = () => {
         <>
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1609710199882100" crossOrigin="anonymous"></script>
             {session ? (
-                <div className='flex flex-col items-start justify-start w-full min-h-screen'>
-                    <header className='flex items-center justify-between w-full px-10 py-4'>
-                        <div className='flex items-center gap-4'>
-                            <Button onClick={handleUploadImage}>
-                                Upload image
-                            </Button>
-                        </div>
-                        <div className='flex gap-4 items-center'>
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                style={{ display: 'none' }}
-                                onChange={handleFileChange}
-                                accept=".jpg, .jpeg, .png"
-                            />
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                                        <Avatar className="h-8 w-8">
-                                            <AvatarImage src={currentUser?.avatar_url} alt={currentUser?.full_name} />
-                                            <AvatarFallback>{currentUser?.full_name?.charAt(0)}</AvatarFallback>
-                                        </Avatar>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56" align="end">
-                                    <DropdownMenuLabel>
-                                        <div className="flex flex-col space-y-1">
-                                            <p className="text-sm font-medium leading-none">{currentUser?.full_name}</p>
-                                            <p className="text-xs leading-none text-muted-foreground">{user?.user_metadata.email}</p>
-                                        </div>
-                                    </DropdownMenuLabel>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                <div className='min-h-screen bg-background'>
+                    <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+                        <div className='container flex h-14 items-center justify-between'>
+                            <div className='flex items-center gap-4'>
+                                <h1 className="text-xl font-bold">Textify</h1>
+                                <Button onClick={handleUploadImage} variant="default">
+                                    Upload Image
+                                </Button>
+                            </div>
+                            <div className='flex items-center gap-4'>
+                                <ModeToggle />
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                                            <Avatar className="h-8 w-8">
+                                                <AvatarImage src={currentUser?.avatar_url} alt={currentUser?.full_name} />
+                                                <AvatarFallback>{currentUser?.full_name?.charAt(0)}</AvatarFallback>
+                                            </Avatar>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-56" align="end">
+                                        <DropdownMenuLabel>
+                                            <div className="flex flex-col space-y-1">
+                                                <p className="text-sm font-medium leading-none">{currentUser?.full_name}</p>
+                                                <p className="text-xs leading-none text-muted-foreground">{user?.user_metadata.email}</p>
+                                            </div>
+                                        </DropdownMenuLabel>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
                         </div>
                     </header>
-                    <Separator /> 
-                    {selectedImage ? (
-                        <div className='flex flex-col md:flex-row items-start justify-start gap-10 w-full h-screen px-10 mt-2'>
-                            <div className="flex flex-col items-start justify-start w-full md:w-1/2 gap-4">
-                                <canvas ref={canvasRef} style={{ display: 'none' }} />
-                                <div className='flex items-center gap-2'>
-                                    <Button onClick={saveCompositeImage} className='md:hidden'>
-                                        Save image
+
+                    <main className="container py-6">
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                            accept=".jpg, .jpeg, .png"
+                        />
+                        
+                        {selectedImage ? (
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+                                <div className="space-y-4">
+                                    <div className="relative aspect-square w-full overflow-hidden rounded-lg border bg-muted">
+                                        <canvas ref={canvasRef} style={{ display: 'none' }} />
+                                        {isImageSetupDone ? (
+                                            <Image
+                                                src={selectedImage} 
+                                                alt="Uploaded"
+                                                layout="fill"
+                                                objectFit="contain" 
+                                                objectPosition="center" 
+                                            />
+                                        ) : (
+                                            <div className="flex h-full items-center justify-center">
+                                                <ReloadIcon className="h-6 w-6 animate-spin" />
+                                                <span className="ml-2">Processing image...</span>
+                                            </div>
+                                        )}
+                                        {isImageSetupDone && textSets.map(textSet => (
+                                            <div
+                                                key={textSet.id}
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: `${50 - textSet.top}%`,
+                                                    left: `${textSet.left + 50}%`,
+                                                    transform: `
+                                                        translate(-50%, -50%) 
+                                                        rotate(${textSet.rotation}deg)
+                                                        perspective(1000px)
+                                                        rotateX(${textSet.tiltX}deg)
+                                                        rotateY(${textSet.tiltY}deg)
+                                                    `,
+                                                    color: textSet.color,
+                                                    textAlign: 'center',
+                                                    fontSize: `${textSet.fontSize}px`,
+                                                    fontWeight: textSet.fontWeight,
+                                                    fontFamily: textSet.fontFamily,
+                                                    opacity: textSet.opacity,
+                                                    letterSpacing: `${textSet.letterSpacing}px`,
+                                                    transformStyle: 'preserve-3d'
+                                                }}
+                                            >
+                                                {textSet.text}
+                                            </div>
+                                        ))}
+                                        {removedBgImageUrl && (
+                                            <Image
+                                                src={removedBgImageUrl}
+                                                alt="Removed bg"
+                                                layout="fill"
+                                                objectFit="contain" 
+                                                objectPosition="center" 
+                                                className="absolute top-0 left-0 w-full h-full"
+                                            /> 
+                                        )}
+                                    </div>
+                                    <Button onClick={saveCompositeImage} className="w-full">
+                                        Save Image
                                     </Button>
                                 </div>
-                                <div className="min-h-[400px] w-[80%] p-4 border border-border rounded-lg relative overflow-hidden">
-                                    {isImageSetupDone ? (
-                                        <Image
-                                            src={selectedImage} 
-                                            alt="Uploaded"
-                                            layout="fill"
-                                            objectFit="contain" 
-                                            objectPosition="center" 
-                                        />
-                                    ) : (
-                                        <span className='flex items-center w-full gap-2'><ReloadIcon className='animate-spin' /> Loading, please wait</span>
-                                    )}
-                                    {isImageSetupDone && textSets.map(textSet => (
-                                        <div
-                                            key={textSet.id}
-                                            style={{
-                                                position: 'absolute',
-                                                top: `${50 - textSet.top}%`,
-                                                left: `${textSet.left + 50}%`,
-                                                transform: `
-                                                    translate(-50%, -50%) 
-                                                    rotate(${textSet.rotation}deg)
-                                                    perspective(1000px)
-                                                    rotateX(${textSet.tiltX}deg)
-                                                    rotateY(${textSet.tiltY}deg)
-                                                `,
-                                                color: textSet.color,
-                                                textAlign: 'center',
-                                                fontSize: `${textSet.fontSize}px`,
-                                                fontWeight: textSet.fontWeight,
-                                                fontFamily: textSet.fontFamily,
-                                                opacity: textSet.opacity,
-                                                letterSpacing: `${textSet.letterSpacing}px`,
-                                                transformStyle: 'preserve-3d'
-                                            }}
-                                        >
-                                            {textSet.text}
-                                        </div>
-                                    ))}
-                                    {removedBgImageUrl && (
-                                        <Image
-                                            src={removedBgImageUrl}
-                                            alt="Removed bg"
-                                            layout="fill"
-                                            objectFit="contain" 
-                                            objectPosition="center" 
-                                            className="absolute top-0 left-0 w-full h-full"
-                                        /> 
-                                    )}
+
+                                <div className='space-y-4'>
+                                    <Button variant="outline" onClick={addNewTextSet} className="w-full">
+                                        <PlusIcon className="mr-2 h-4 w-4" />
+                                        Add New Text
+                                    </Button>
+                                    <ScrollArea className="h-[calc(100vh-16rem)] rounded-md border p-4">
+                                        <Accordion type="single" collapsible className="w-full">
+                                            {textSets.map(textSet => (
+                                                <TextCustomizer 
+                                                    key={textSet.id}
+                                                    textSet={textSet}
+                                                    handleAttributeChange={handleAttributeChange}
+                                                    removeTextSet={removeTextSet}
+                                                    duplicateTextSet={duplicateTextSet}
+                                                    userId={currentUser?.id}
+                                                />
+                                            ))}
+                                        </Accordion>
+                                    </ScrollArea>
                                 </div>
-                                {!currentUser.paid && (
-                                    <AppAds />
-                                )}
                             </div>
-                            <div className='flex flex-col w-full md:w-1/2'>
-                                <Button variant={'secondary'} onClick={addNewTextSet}><PlusIcon className='mr-2'/> Add New Text Set</Button>
-                                <ScrollArea className="h-[calc(100vh-10rem)] p-2">
-                                    <Accordion type="single" collapsible className="w-full mt-2">
-                                        {textSets.map(textSet => (
-                                            <TextCustomizer 
-                                                key={textSet.id}
-                                                textSet={textSet}
-                                                handleAttributeChange={handleAttributeChange}
-                                                removeTextSet={removeTextSet}
-                                                duplicateTextSet={duplicateTextSet}
-                                                userId={currentUser.id}
-                                            />
-                                        ))}
-                                    </Accordion>
-                                </ScrollArea>
+                        ) : (
+                            <div className='flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] text-center'>
+                                <h2 className="text-2xl font-semibold mb-4">Welcome to Textify</h2>
+                                <p className="text-muted-foreground mb-8">Create beautiful text effects behind your images</p>
+                                <Button size="lg" onClick={handleUploadImage}>
+                                    Upload Your First Image
+                                </Button>
                             </div>
-                        </div>
-                    ) : (
-                        <div className='flex items-center justify-center min-h-screen w-full'>
-                            <h2 className="text-xl font-semibold">Welcome, get started by uploading an image!</h2>
-                        </div>
-                    )} 
+                        )}
+                    </main>
                 </div>
             ) : (
                 <Authenticate />

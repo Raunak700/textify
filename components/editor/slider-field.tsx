@@ -38,42 +38,21 @@ const SliderField: React.FC<SliderFieldProps> = ({
     };
   
     return (
-      <>
-        <div className={`flex items-center justify-between ${hasTopPadding ? 'mt-8' : ''}`}>
-          <div className="flex items-center gap-2">
-            <Label htmlFor={attribute}>{label}</Label>
-            {premiumFeature && (
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <LockIcon size={12} />
-                <span>Pro</span>
-              </div>
-            )}
-          </div>
-          <Input
-            type="text"
-            value={currentValue}
-            onChange={handleSliderInputFieldChange}
-            className={`w-12 rounded-md border border-transparent px-2 py-0.5 text-center text-sm ${
-              disabled ? 'opacity-50 cursor-not-allowed' : 'text-muted-foreground hover:border-border hover:text-foreground hover:animate-pulse'
-            }`}
-            min={min}
-            max={max}
-            step={step}
-            disabled={disabled}
-          />
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <Label>{label}</Label>
+          <span className="text-sm text-muted-foreground">{currentValue}</span>
         </div>
         <Slider
-          id={attribute}
+          value={[currentValue]}
           min={min}
           max={max}
-          value={[currentValue]}
           step={step}
-          onValueChange={(value) => !disabled && handleAttributeChange(attribute, value[0])}
-          className={`[&_[role=slider]]:h-4 [&_[role=slider]]:w-4 mt-2 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-          aria-label={label}
+          onValueChange={([newValue]) => !disabled && handleAttributeChange(attribute, newValue)}
+          className="w-full"
           disabled={disabled}
         />
-    </>
+      </div>
     );
 };
 
