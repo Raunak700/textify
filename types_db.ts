@@ -15,18 +15,21 @@ export type Database = {
           full_name: string | null
           id: string
           username: string | null
+          images_generated: number
         }
         Insert: {
           avatar_url?: string | null
           full_name?: string | null
           id: string
           username?: string | null
+          images_generated?: number
         }
         Update: {
           avatar_url?: string | null
           full_name?: string | null
           id?: string
           username?: string | null
+          images_generated?: number
         }
         Relationships: [
           {
