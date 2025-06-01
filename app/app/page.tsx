@@ -61,13 +61,8 @@ const Page = () => {
     };
 
     const handleUploadImage = () => {
-        if (currentUser && (currentUser.images_generated < 2 || currentUser.paid)) {
-            if (fileInputRef.current) {
-                fileInputRef.current.click();
-            }
-        } else {
-            alert("You have reached the limit of free generations.");
-            setIsPayDialogOpen(true);
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
         }
     };
 
@@ -245,16 +240,14 @@ const Page = () => {
     return (
         <>
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1609710199882100" crossOrigin="anonymous"></script>
-            {user && session && session.user && currentUser ? (
-                <div className='flex flex-col h-screen'>
-                    {!currentUser.paid && (
-                        <FirecrawlAd />
-                    )}
-                    <header className='flex flex-row items-center justify-between p-5 px-10'>
-                        <h2 className="text-4xl md:text-2xl font-semibold tracking-tight">
-                            <span className="block md:hidden">TBI</span>
-                            <span className="hidden md:block">Text behind image editor</span>
-                        </h2>
+            {session ? (
+                <div className='flex flex-col items-start justify-start w-full min-h-screen'>
+                    <header className='flex items-center justify-between w-full px-10 py-4'>
+                        <div className='flex items-center gap-4'>
+                            <Button onClick={handleUploadImage}>
+                                Upload image
+                            </Button>
+                        </div>
                         <div className='flex gap-4 items-center'>
                             <input
                                 type="file"
@@ -263,45 +256,14 @@ const Page = () => {
                                 onChange={handleFileChange}
                                 accept=".jpg, .jpeg, .png"
                             />
-                            <div className='flex items-center gap-5'>
-                                <div className='hidden md:block font-semibold'>
-                                    {currentUser.paid ? (
-                                        <p className='text-sm'>
-                                            Unlimited generations
-                                        </p>
-                                    ) : (
-                                        <div className='flex items-center gap-2'>
-                                            <p className='text-sm'>
-                                                {2 - (currentUser.images_generated)} generations left
-                                            </p>
-                                            <Button 
-                                                variant="link" 
-                                                className="p-0 h-auto text-sm text-primary hover:underline"
-                                                onClick={() => setIsPayDialogOpen(true)}
-                                            >
-                                                Upgrade
-                                            </Button>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className='flex gap-2'>
-                                    <Button onClick={handleUploadImage}>
-                                        Upload image
-                                    </Button>
-                                    {selectedImage && (
-                                        <Button onClick={saveCompositeImage} className='hidden md:flex'>
-                                            Save image
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                            <ModeToggle />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Avatar className="cursor-pointer">
-                                        <AvatarImage src={currentUser?.avatar_url} /> 
-                                        <AvatarFallback>TBI</AvatarFallback>
-                                    </Avatar>
+                                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                                        <Avatar className="h-8 w-8">
+                                            <AvatarImage src={currentUser?.avatar_url} alt={currentUser?.full_name} />
+                                            <AvatarFallback>{currentUser?.full_name?.charAt(0)}</AvatarFallback>
+                                        </Avatar>
+                                    </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-56" align="end">
                                     <DropdownMenuLabel>
@@ -310,10 +272,6 @@ const Page = () => {
                                             <p className="text-xs leading-none text-muted-foreground">{user?.user_metadata.email}</p>
                                         </div>
                                     </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => setIsPayDialogOpen(true)}>
-                                        <button>{currentUser?.paid ? 'View Plan' : 'Upgrade to Pro'}</button>
-                                    </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
@@ -327,26 +285,6 @@ const Page = () => {
                                     <Button onClick={saveCompositeImage} className='md:hidden'>
                                         Save image
                                     </Button>
-                                    <div className='block md:hidden'>
-                                        {currentUser.paid ? (
-                                            <p className='text-sm'>
-                                                Unlimited generations
-                                            </p>
-                                        ) : (
-                                            <div className='flex items-center gap-5'>
-                                                <p className='text-sm'>
-                                                    {2 - (currentUser.images_generated)} generations left
-                                                </p>
-                                                <Button 
-                                                    variant="link" 
-                                                    className="p-0 h-auto text-sm text-primary hover:underline"
-                                                    onClick={() => setIsPayDialogOpen(true)}
-                                                >
-                                                    Upgrade
-                                                </Button>
-                                            </div>
-                                        )}
-                                    </div>
                                 </div>
                                 <div className="min-h-[400px] w-[80%] p-4 border border-border rounded-lg relative overflow-hidden">
                                     {isImageSetupDone ? (
@@ -425,7 +363,6 @@ const Page = () => {
                             <h2 className="text-xl font-semibold">Welcome, get started by uploading an image!</h2>
                         </div>
                     )} 
-                    <PayDialog userDetails={currentUser as any} userEmail={user.user_metadata.email} isOpen={isPayDialogOpen} onClose={() => setIsPayDialogOpen(false)} /> 
                 </div>
             ) : (
                 <Authenticate />

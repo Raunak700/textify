@@ -4,8 +4,6 @@ export interface Profile {
     full_name: string;
     avatar_url: string;
     images_generated: number;
-    paid: boolean;
-    subscription_id: string;
 }
 
 export interface Design {
