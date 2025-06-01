@@ -23,7 +23,6 @@ import { PlusIcon, ReloadIcon } from '@radix-ui/react-icons';
 import { removeBackground } from "@imgly/background-removal";
 
 import '@/app/fonts.css';
-import PayDialog from '@/components/pay-dialog';
 import AppAds from '@/components/editor/app-ads';
 import FirecrawlAd from '@/ads/firecrawl';
 
@@ -37,7 +36,6 @@ const Page = () => {
     const [isImageSetupDone, setIsImageSetupDone] = useState<boolean>(false);
     const [removedBgImageUrl, setRemovedBgImageUrl] = useState<string | null>(null);
     const [textSets, setTextSets] = useState<Array<any>>([]);
-    const [isPayDialogOpen, setIsPayDialogOpen] = useState<boolean>(false); 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
