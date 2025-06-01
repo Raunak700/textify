@@ -3,6 +3,7 @@ const nextConfig = {
     output: 'export',
     basePath: '/textify',
     images: {
+        unoptimized: true,
         remotePatterns: [
             {
               protocol: 'https',
