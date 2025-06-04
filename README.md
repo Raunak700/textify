@@ -1,30 +1,34 @@
-# Textify - Text Behind Image
+# Textify
 
-A Next.js application that allows you to create text behind images with beautiful effects and customization options.
-
-## Live Demo
-Visit the live site at: https://raunak700.github.io/textify
+A simple web application that allows you to add text behind images. This is a personal project that helps you create beautiful text overlays on your images.
 
 ## Features
-- Create text behind images
-- Customize text appearance
-- Multiple font options
-- Responsive design
-- Beautiful UI/UX
-- Dark/Light mode support
 
-## Development
-```bash
-npm install
-npm run dev
-```
+- Upload images
+- Add text behind images
+- Customize text color and position
+- Download the final image
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Deployment
-This project is automatically deployed to GitHub Pages using GitHub Actions.
+
+The project is automatically deployed to GitHub Pages when changes are pushed to the main branch.
 
 ## Technologies Used
+
 - Next.js
-- TypeScript
+- React
 - Tailwind CSS
-- Framer Motion
-- Radix UI
+- TypeScript
